@@ -33,32 +33,37 @@ class _QuizPageState extends State<QuizPage> {
 
   int questionNumber = 0;
 
+  int correctNumber = 0;
+
   void checkAnswer(bool userPickAnswer) {
     setState(() {
+      if (quizBrain.checkAnswer(userPickAnswer)) {
+        scoreKeeper.add(
+          Icon(
+            Icons.check,
+            color: Colors.green,
+          ),
+        );
+        correctNumber++;
+      } else {
+        scoreKeeper.add(
+          Icon(
+            Icons.close,
+            color: Colors.red,
+          ),
+        );
+      }
+
       if (quizBrain.isFinished()) {
         Alert(
           context: context,
           title: "Finished",
-          desc: "You've reached the end of the quiz",
+          desc: "You've reached the end of the quiz\nCorrect: $correctNumber",
         ).show();
         quizBrain.reset();
         scoreKeeper = [];
+        correctNumber = 0;
       } else {
-        if (quizBrain.checkAnswer(userPickAnswer)) {
-          scoreKeeper.add(
-            Icon(
-              Icons.check,
-              color: Colors.green,
-            ),
-          );
-        } else {
-          scoreKeeper.add(
-            Icon(
-              Icons.close,
-              color: Colors.red,
-            ),
-          );
-        }
         quizBrain.nextQuestion();
       }
     });
